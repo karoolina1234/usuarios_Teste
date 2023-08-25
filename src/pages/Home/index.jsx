@@ -5,12 +5,15 @@ import { Delete, Edit } from "@mui/icons-material"
 
 import * as S from './styles'
 import EditItem from "../../components/Edit"
+import RemoveItem from "../../components/Delete"
 const Home = () => {
-    var usersArray = localStorage.getItem("users");
     var users = JSON.parse(localStorage.getItem("users") || "[]");
+
 
     const [isEdit, setIsEdit] = useState(false)
     const [itemEdit, setItemEdit] = useState([])
+
+    const [isDelete, setIsDelete] = useState(false)
 
     useEffect(() => {
         async function getData() {
@@ -19,7 +22,7 @@ const Home = () => {
                 if (users.length > 0) {
                     localStorage.setItem("users", JSON.stringify([...users]))
 
-                }else{
+                } else {
                     localStorage.setItem("users", JSON.stringify(data))
 
                 }
@@ -37,8 +40,16 @@ const Home = () => {
         setIsEdit(true)
         setItemEdit(item)
     }
+
+    const deleteItem = (item) => {
+        setIsDelete(true)
+        setItemEdit(item)
+
+    }
+
     return (
         <S.Item>
+            {isDelete && <RemoveItem handleClose={() => setIsDelete(false)} open={isDelete} item={itemEdit} />}
             {isEdit && <EditItem handleClose={() => setIsEdit(false)} open={isEdit} item={itemEdit} />}
             <Typography className="titleItem" variant="body2">Lista de usuários</Typography>
             <List id="ListUser">
@@ -51,7 +62,7 @@ const Home = () => {
                                     <IconButton edge="end" onClick={() => openEdit(item)}>
                                         <Edit />
                                     </IconButton>
-                                    <IconButton edge="end">
+                                    <IconButton edge="end" onClick={() => deleteItem(item)}>
                                         <Delete id="delete" />
                                     </IconButton></>
 

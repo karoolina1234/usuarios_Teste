@@ -43,7 +43,6 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
                         }
                     })
 
-                    console.log({ users, item })
                     localStorage.setItem("users", JSON.stringify(users))
                     clearData()
                     handleClose()
