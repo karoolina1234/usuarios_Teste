@@ -99,13 +99,13 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
 
     return (
         <AddData>
-            {!isEdit ? 
-            (
-                <Typography id="text">Adicionar novo usuário</Typography>
-            ):
-            (
-                <Typography id="editText">Editar usuário</Typography>
-            )}
+            {!isEdit ?
+                (
+                    <Typography id="text">Adicionar novo usuário</Typography>
+                ) :
+                (
+                    <Typography id="editText">Editar usuário</Typography>
+                )}
             <Box>
                 <div className="itemForm">
                     <TextField label="Nome" required variant="outlined" value={name} onChange={(e) => setName(e.target.value)} />
@@ -124,7 +124,13 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
                     />
                 </div>
                 <div className="itemForm">
-                    <TextField label="Phone" required variant="outlined" value={formatPhoneNumber(phone)} onChange={(e) => setPhone(e.target.value)} />
+                    <TextField label="Phone" required variant="outlined"
+                        value={formatPhoneNumber(phone)} onChange={(e) => setPhone(e.target.value)}
+                        inputProps={
+                            {
+                                maxLength: 15
+                            }}
+                    />
 
                 </div>
 
@@ -144,7 +150,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
                     onClick={() => sendData()}>Adicionar</Button>
             ) :
                 (<Button id="btnADD" variant="contained" style={{
-                    marginBottom:"1rem"
+                    marginBottom: "1rem"
                 }}
                     onClick={() => sendData(itemEdit.id)}>Editar</Button>)
             }
