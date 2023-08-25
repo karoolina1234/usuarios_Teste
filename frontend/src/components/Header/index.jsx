@@ -6,7 +6,6 @@ import ListItem from '@mui/material/ListItem';
 import { Link } from 'react-router-dom';
 import { Menu } from './styles';
 import { Add, HomeOutlined } from '@mui/icons-material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 
 import { styled } from '@mui/material/styles';
