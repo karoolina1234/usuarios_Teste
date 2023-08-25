@@ -19,12 +19,18 @@ const RemoveItem = ({ open, handleClose, item }) => {
     };
     return (
         <Dialog open={open}>
-            <DialogTitle>
+            <DialogTitle style={{padding:'2rem'}}>
                 Remover usuário {item.name}
             </DialogTitle>
 
-            <Button variant="gray" onClick={() => deleteUserApi(item.id)}>OK</Button>
-            <Button variant="gray" onClick={handleClose}>Cancelar</Button>
+            <Button style={{
+                padding:'1rem'
+            }} variant="gray" onClick={() => deleteUserApi(item.id)}>OK</Button>
+            <Button 
+            style={{
+                padding:'1rem'
+            }}
+            variant="gray" onClick={handleClose}>Cancelar</Button>
 
         </Dialog>
     )

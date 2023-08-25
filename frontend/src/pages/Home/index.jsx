@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
-import axios from "axios"
-import { Box, IconButton, InputAdornment, List, ListItem, ListItemText, TextField, Typography } from "@mui/material"
+import { Box, IconButton, InputAdornment, List, ListItem, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material"
 import { Delete, Edit, Search } from "@mui/icons-material"
 
 import * as S from './styles'
@@ -8,6 +7,7 @@ import EditItem from "../../components/Edit"
 import RemoveItem from "../../components/Delete"
 import Details from "../../components/DetailsUser"
 import { setupAPICliente } from "../../request/api"
+
 const Home = () => {
 
 
@@ -24,8 +24,8 @@ const Home = () => {
     useEffect(() => {
         async function getData() {
             try {
-                const apiClient = setupAPICliente(); 
-                const {data} = await apiClient.get('/users/list')
+                const apiClient = setupAPICliente();
+                const { data } = await apiClient.get('/users/list')
                 setUserList(data)
 
             } catch (error) {
@@ -62,48 +62,55 @@ const Home = () => {
             {isDelete && <RemoveItem handleClose={() => setIsDelete(false)} open={isDelete} item={itemEdit} />}
             {isEdit && <EditItem handleClose={() => setIsEdit(false)} open={isEdit} item={itemEdit} />}
             {openItem && <Details handleClose={() => setOpenItem(false)} item={itemEdit} open={openEdit} />}
-            <Typography className="titleItem" variant="body2">Lista de usuários</Typography>
-            <TextField value={search} onChange={(e) => setSearch(e.target.value)} size="small"
-            style={{
-                marginTop:'1rem',
-                marginBottom:'2rem'
-            }}
-            placeholder="Busque por um usuário"
-                InputProps={{
-                    endAdornment: (
-                        <InputAdornment position="end">
-                            <Search />
-                        </InputAdornment>
-                    )
-                }} />
-            <List id="ListUser">
-                {userList?.filter((val) => {
-                    if (search == '') {
-                        return val
-                    } else if (val.name.toLowerCase().includes(search.toLocaleLowerCase())) {
-                        return val
-                    }
-                }).map((item) => {
-                    return (
-                        <ListItem
 
-                            id="item"
-                            secondaryAction={
-                                <>
-                                    <IconButton edge="end" onClick={() => openEdit(item)}>
-                                        <Edit />
-                                    </IconButton>
-                                    <IconButton edge="end" onClick={() => deleteItem(item)}>
-                                        <Delete id="delete" />
-                                    </IconButton></>
+            <Box id="ListUser">
+                <Typography className="titleItem" variant="body2">Lista de usuários</Typography>
+               
+               <div  className="inputSearch">
+                <Search/>
+               <input
+                    value={search} onChange={(e) => setSearch(e.target.value)} size="small"
+                    placeholder="Busque por um usuário"
+                />
+               </div>
+               
+                <TableContainer id="tabela" style={{
+                    maxHeight:"20rem"
+                }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell className="titleTableItem">Usuário</TableCell>
+                                <TableCell className="titleTableItem" id="action">Ações</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {userList?.filter((val) => {
+                                if (search === '') {
+                                    return val
+                                } else if (val.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) {
+                                    return val
+                                }
+                            }).map((item) => {
+                                return (
+                                    <TableRow className="rowItem">
+                                        <TableCell className="titleBodyItem" onClick={() => openUser(item)}>{item.name}</TableCell>
+                                        <TableCell id='action'>
+                                            <button  id="btnOPT" onClick={() => openEdit(item)}>
+                                                <Edit />
+                                            </button>
+                                            <button  id="btnOPT" onClick={() => deleteItem(item)}>
+                                                <Delete id="delete" />
+                                            </button></TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
 
-                            }>
-                            <ListItemText onClick={() => openUser(item)}>{item.name}</ListItemText>
-                        </ListItem>
-                    )
+                </TableContainer>
 
-                })}
-            </List>
+            </Box>
         </S.Item>
     )
 }

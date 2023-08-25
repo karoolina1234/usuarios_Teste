@@ -14,6 +14,7 @@ const EditItem = ({ open, handleClose, item }) => {
                 <Button style={{
                     position: 'absolute',
                     right: '1rem',
+                    top:'1rem'
 
                 }} className="closebutton" onClick={handleClose}><Close /></Button>
 

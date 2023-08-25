@@ -13,9 +13,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
     const [isValid, setIsValid] = useState(true);
 
 
-    function generateRandomId(max) {
-        return Math.floor(Math.random() * max) + 1;
-    }
+   
 
     const sendData = async (item) => {
         const userData = ({
@@ -24,8 +22,9 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
             phone: phone,
             description: description
         })
+
         try {
-            if (userData) {
+            if (itemEdit) {
               
                 const apiClient = setupAPICliente(); 
                 const response = await apiClient.put(`/users/edit?id=${itemEdit.id}`, userData)
@@ -38,7 +37,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
                 } else {
                     const apiClient = setupAPICliente(); 
                     const response = await apiClient.post('/users', userData)
-
+                    console.log(response)
                     if (response.status === 200) {
                         clearData()
                     }
@@ -84,7 +83,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
 
 
     return (
-        <AddData>
+        <AddData isEdit={isEdit}>
             {!isEdit ?
                 (
                     <Typography id="text">Adicionar novo usuário</Typography>
