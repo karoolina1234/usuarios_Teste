@@ -8,6 +8,10 @@ text-align: center;
     font-size:1.5rem;
     margin-bottom: 1rem;
 }
+#editText{
+    margin-top: 1rem;
+    font-size:1.5rem;
+}
 .itemForm{
     margin:0.5rem;
     input{

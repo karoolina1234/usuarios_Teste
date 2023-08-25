@@ -4,22 +4,26 @@ import { Box, IconButton, List, ListItem, ListItemText, Typography } from "@mui/
 import { Delete, Edit } from "@mui/icons-material"
 
 import * as S from './styles'
+import EditItem from "../../components/Edit"
 const Home = () => {
-    const [listUsers, setListUsers] = useState([])
     var usersArray = localStorage.getItem("users");
-    var users = JSON.parse(usersArray)
+    var users = JSON.parse(localStorage.getItem("users") || "[]");
+
+    const [isEdit, setIsEdit] = useState(false)
+    const [itemEdit, setItemEdit] = useState([])
 
     useEffect(() => {
         async function getData() {
             try {
                 const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
-
-                if(users?.length>0){
-                    setListUsers([...users, ...data])
+                if (users.length > 0) {
+                    localStorage.setItem("users", JSON.stringify([...users]))
 
                 }else{
-                   setListUsers(data)
+                    localStorage.setItem("users", JSON.stringify(data))
+
                 }
+
             } catch (error) {
                 console.error(error)
             }
@@ -29,20 +33,22 @@ const Home = () => {
     }, [])
 
 
-  
-
-
+    const openEdit = (item) => {
+        setIsEdit(true)
+        setItemEdit(item)
+    }
     return (
         <S.Item>
+            {isEdit && <EditItem handleClose={() => setIsEdit(false)} open={isEdit} item={itemEdit} />}
             <Typography className="titleItem" variant="body2">Lista de usuários</Typography>
             <List id="ListUser">
-                {listUsers?.map((item) => {
+                {users?.map((item) => {
                     return (
                         <ListItem
                             id="item"
                             secondaryAction={
                                 <>
-                                    <IconButton edge="end">
+                                    <IconButton edge="end" onClick={() => openEdit(item)}>
                                         <Edit />
                                     </IconButton>
                                     <IconButton edge="end">

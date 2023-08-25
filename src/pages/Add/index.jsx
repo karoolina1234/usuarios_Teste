@@ -5,35 +5,59 @@ import { AddData } from "./styles";
 
 
 
-const AddItem = () => {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [phone, setPhone] = useState('')
-    const [userName, setUserName] = useState('')
-    const [webSite, setWebSite] = useState('')
+const AddItem = ({ isEdit, itemEdit, handleClose }) => {
+    const [name, setName] = useState(itemEdit ? itemEdit.name : '')
+    const [email, setEmail] = useState(itemEdit ? itemEdit.email : '')
+    const [phone, setPhone] = useState(itemEdit ? itemEdit.phone : '')
+    const [username, setUserName] = useState(itemEdit ? itemEdit.username : '')
+    const [website, setWebSite] = useState(itemEdit ? itemEdit.website : '')
 
     const [isValid, setIsValid] = useState(true);
 
 
+    function generateRandomId(max) {
+        return Math.floor(Math.random() * max) + 1;
+    }
 
-    const sendData = async () => {
+    const sendData = async (item) => {
         const userData = ({
-            id: Math.random(),
+            id: generateRandomId(500),
             name: name,
             email: email,
             phone: phone,
-            userName: userName,
-            webSite: webSite
+            username: username,
+            website: website
         })
         try {
             if (userData) {
-                const response = await axios.post('https://jsonplaceholder.typicode.com/users', userData);
-                if (response.status === 201) {
-                    var users = JSON.parse(localStorage.getItem("users") || "[]");
-                    users.push(userData)
+                if (item) {
+                    var users = JSON.parse(localStorage.getItem("users"));
+
+                    users.forEach(val => {
+                        if (val.id == itemEdit.id) {
+                            val.name = name
+                            val.email = email
+                            val.phone = phone
+                            val.username = username
+                            val.website = website
+                        }
+                    })
+
+                    console.log({ users, item })
                     localStorage.setItem("users", JSON.stringify(users))
                     clearData()
+                    handleClose()
+
+                } else {
+                    const response = await axios.post('https://jsonplaceholder.typicode.com/users', userData);
+                    if (response.status === 201) {
+                        var users = JSON.parse(localStorage.getItem("users") || "[]");
+                        users.push(userData)
+                        localStorage.setItem("users", JSON.stringify(users))
+                        clearData()
+                    }
                 }
+
             }
 
 
@@ -76,7 +100,13 @@ const AddItem = () => {
 
     return (
         <AddData>
-            <Typography id="text">Adicionar novo usuário</Typography>
+            {!isEdit ? 
+            (
+                <Typography id="text">Adicionar novo usuário</Typography>
+            ):
+            (
+                <Typography id="editText">Editar usuário</Typography>
+            )}
             <Box>
                 <div className="itemForm">
                     <TextField label="Nome" required variant="outlined" value={name} onChange={(e) => setName(e.target.value)} />
@@ -100,19 +130,26 @@ const AddItem = () => {
                 </div>
 
                 <div className="itemForm">
-                    <TextField label="Username" variant="outlined" value={userName} onChange={(e) => setUserName(e.target.value)} />
+                    <TextField label="Username" variant="outlined" value={username} onChange={(e) => setUserName(e.target.value)} />
 
                 </div>
                 <div className="itemForm">
-                    <TextField label="Website" variant="outlined" value={webSite} onChange={(e) => setWebSite(e.target.value)} />
+                    <TextField label="Website" variant="outlined" value={website} onChange={(e) => setWebSite(e.target.value)} />
 
                 </div>
 
             </Box>
+            {!isEdit ? (
+                <Button id="btnADD" variant="contained"
+                    disabled={!name || !email || !phone}
+                    onClick={() => sendData()}>Adicionar</Button>
+            ) :
+                (<Button id="btnADD" variant="contained" style={{
+                    marginBottom:"1rem"
+                }}
+                    onClick={() => sendData(itemEdit.id)}>Editar</Button>)
+            }
 
-            <Button id="btnADD" variant="contained"
-                disabled={!name || !email || !phone}
-                onClick={() => sendData()}>Adicionar</Button>
         </AddData>
     )
 }
