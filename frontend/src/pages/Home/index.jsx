@@ -7,8 +7,8 @@ import * as S from './styles'
 import EditItem from "../../components/Edit"
 import RemoveItem from "../../components/Delete"
 import Details from "../../components/DetailsUser"
+import { setupAPICliente } from "../../request/api"
 const Home = () => {
-    var users = JSON.parse(localStorage.getItem("users") || "[]");
 
 
     const [isEdit, setIsEdit] = useState(false)
@@ -17,19 +17,16 @@ const Home = () => {
     const [isDelete, setIsDelete] = useState(false)
     const [openItem, setOpenItem] = useState(false)
 
+    const [userList, setUserList] = useState([])
+
     const [search, setSearch] = useState("")
 
     useEffect(() => {
         async function getData() {
             try {
-                const { data } = await axios.get('https://jsonplaceholder.typicode.com/users');
-                if (users.length > 0) {
-                    localStorage.setItem("users", JSON.stringify([...users]))
-
-                } else {
-                    localStorage.setItem("users", JSON.stringify(data))
-
-                }
+                const apiClient = setupAPICliente(); 
+                const {data} = await apiClient.get('/users/list')
+                setUserList(data)
 
             } catch (error) {
                 console.error(error)
@@ -54,14 +51,12 @@ const Home = () => {
     }
 
     const openUser = (item) => {
-        { console.log({ isEdit, isDelete }) }
         if (!isEdit || !isDelete) {
             setOpenItem(true)
             setItemEdit(item)
         }
 
     }
-    console.log({ search })
     return (
         <S.Item>
             {isDelete && <RemoveItem handleClose={() => setIsDelete(false)} open={isDelete} item={itemEdit} />}
@@ -82,7 +77,7 @@ const Home = () => {
                     )
                 }} />
             <List id="ListUser">
-                {users?.filter((val) => {
+                {userList?.filter((val) => {
                     if (search == '') {
                         return val
                     } else if (val.name.toLowerCase().includes(search.toLocaleLowerCase())) {

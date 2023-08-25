@@ -1,7 +1,7 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import axios from "axios";
 import React, { useState } from "react";
 import { AddData } from "./styles";
+import { setupAPICliente } from "../../request/api";
 
 
 
@@ -9,9 +9,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
     const [name, setName] = useState(itemEdit ? itemEdit.name : '')
     const [email, setEmail] = useState(itemEdit ? itemEdit.email : '')
     const [phone, setPhone] = useState(itemEdit ? itemEdit.phone : '')
-    const [username, setUserName] = useState(itemEdit ? itemEdit.username : '')
-    const [website, setWebSite] = useState(itemEdit ? itemEdit.website : '')
-
+    const [description, setDescription] = useState(itemEdit? itemEdit.description:'')
     const [isValid, setIsValid] = useState(true);
 
 
@@ -21,43 +19,32 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
 
     const sendData = async (item) => {
         const userData = ({
-            id: generateRandomId(500),
             name: name,
             email: email,
             phone: phone,
-            username: username,
-            website: website
+            description: description
         })
         try {
             if (userData) {
-                if (item) {
-                    var users = JSON.parse(localStorage.getItem("users"));
+              
+                const apiClient = setupAPICliente(); 
+                const response = await apiClient.put(`/users/edit?id=${itemEdit.id}`, userData)
 
-                    users.forEach(val => {
-                        if (val.id == itemEdit.id) {
-                            val.name = name
-                            val.email = email
-                            val.phone = phone
-                            val.username = username
-                            val.website = website
-                        }
-                    })
-
-                    localStorage.setItem("users", JSON.stringify(users))
+                if (response.status === 200) {
                     clearData()
+                    window.location.reload()
                     handleClose()
-
+                }
                 } else {
-                    const response = await axios.post('https://jsonplaceholder.typicode.com/users', userData);
-                    if (response.status === 201) {
-                        var users = JSON.parse(localStorage.getItem("users") || "[]");
-                        users.push(userData)
-                        localStorage.setItem("users", JSON.stringify(users))
+                    const apiClient = setupAPICliente(); 
+                    const response = await apiClient.post('/users', userData)
+
+                    if (response.status === 200) {
                         clearData()
                     }
                 }
 
-            }
+            
 
 
         } catch (error) {
@@ -69,8 +56,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
         setName('');
         setEmail('');
         setPhone('');
-        setUserName('');
-        setWebSite('');
+        setDescription('')
     }
 
     function formatPhoneNumber(phoneNumber) {
@@ -135,11 +121,7 @@ const AddItem = ({ isEdit, itemEdit, handleClose }) => {
                 </div>
 
                 <div className="itemForm">
-                    <TextField label="Username" variant="outlined" value={username} onChange={(e) => setUserName(e.target.value)} />
-
-                </div>
-                <div className="itemForm">
-                    <TextField label="Website" variant="outlined" value={website} onChange={(e) => setWebSite(e.target.value)} />
+                    <TextField multiline rows={3} label="Description" variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)} />
 
                 </div>
 
