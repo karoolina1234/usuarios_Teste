@@ -6,6 +6,7 @@ import { Delete, Edit } from "@mui/icons-material"
 import * as S from './styles'
 import EditItem from "../../components/Edit"
 import RemoveItem from "../../components/Delete"
+import Details from "../../components/DetailsUser"
 const Home = () => {
     var users = JSON.parse(localStorage.getItem("users") || "[]");
 
@@ -14,6 +15,7 @@ const Home = () => {
     const [itemEdit, setItemEdit] = useState([])
 
     const [isDelete, setIsDelete] = useState(false)
+    const [openItem, setOpenItem] = useState(false)
 
     useEffect(() => {
         async function getData() {
@@ -39,23 +41,36 @@ const Home = () => {
     const openEdit = (item) => {
         setIsEdit(true)
         setItemEdit(item)
+        setOpenItem(false)
+
     }
 
     const deleteItem = (item) => {
         setIsDelete(true)
+        setOpenItem(false)
         setItemEdit(item)
+    }
 
+    const openUser = (item)=>{
+        {console.log({isEdit, isDelete})}
+        if(!isEdit || !isDelete){
+            setOpenItem(true)
+            setItemEdit(item)
+        }
+    
     }
 
     return (
         <S.Item>
             {isDelete && <RemoveItem handleClose={() => setIsDelete(false)} open={isDelete} item={itemEdit} />}
             {isEdit && <EditItem handleClose={() => setIsEdit(false)} open={isEdit} item={itemEdit} />}
+            {openItem && <Details handleClose={()=>setOpenItem(false)} item={itemEdit} open={openEdit}/>}
             <Typography className="titleItem" variant="body2">Lista de usuários</Typography>
             <List id="ListUser">
                 {users?.map((item) => {
                     return (
                         <ListItem
+                           
                             id="item"
                             secondaryAction={
                                 <>
@@ -67,7 +82,7 @@ const Home = () => {
                                     </IconButton></>
 
                             }>
-                            <ListItemText>{item.name}</ListItemText>
+                            <ListItemText  onClick={()=>openUser(item)}>{item.name}</ListItemText>
                         </ListItem>
                     )
 
