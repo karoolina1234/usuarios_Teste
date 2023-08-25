@@ -73,42 +73,48 @@ const Home = () => {
                     placeholder="Busque por um usuário"
                 />
                </div>
-               
-                <TableContainer id="tabela" style={{
-                    maxHeight:"20rem"
-                }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell className="titleTableItem">Usuário</TableCell>
-                                <TableCell className="titleTableItem" id="action">Ações</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {userList?.filter((val) => {
-                                if (search === '') {
-                                    return val
-                                } else if (val.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) {
-                                    return val
-                                }
-                            }).map((item) => {
-                                return (
-                                    <TableRow className="rowItem">
-                                        <TableCell className="titleBodyItem" onClick={() => openUser(item)}>{item.name}</TableCell>
-                                        <TableCell id='action'>
-                                            <button  id="btnOPT" onClick={() => openEdit(item)}>
-                                                <Edit />
-                                            </button>
-                                            <button  id="btnOPT" onClick={() => deleteItem(item)}>
-                                                <Delete id="delete" />
-                                            </button></TableCell>
-                                    </TableRow>
-                                )
-                            })}
-                        </TableBody>
-                    </Table>
-
-                </TableContainer>
+               {userList.length > 0 ? (
+                    <TableContainer id="tabela" style={{
+                        maxHeight:"20rem"
+                    }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell className="titleTableItem">Usuário</TableCell>
+                                    <TableCell className="titleTableItem" id="action">Ações</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {userList?.filter((val) => {
+                                    if (search === '') {
+                                        return val
+                                    } else if (val.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())) {
+                                        return val
+                                    }
+                                }).map((item) => {
+                                    return (
+                                        <TableRow className="rowItem">
+                                            <TableCell className="titleBodyItem" onClick={() => openUser(item)}>{item.name}</TableCell>
+                                            <TableCell id='action'>
+                                                <button  id="btnOPT" onClick={() => openEdit(item)}>
+                                                    <Edit />
+                                                </button>
+                                                <button  id="btnOPT" onClick={() => deleteItem(item)}>
+                                                    <Delete id="delete" />
+                                                </button></TableCell>
+                                        </TableRow>
+                                    )
+                                })}
+                            </TableBody>
+                        </Table>
+    
+                    </TableContainer>
+               ) : (
+                <div>
+                    <p style={{color:"#5932EA"}}>Nenhum usuario adicionado</p>
+                </div>
+               )}
+            
 
             </Box>
         </S.Item>
